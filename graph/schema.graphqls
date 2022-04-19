@@ -34,6 +34,16 @@ input NewSponsor {
   logo: String
 }
 
+input UpdatedSponsor {
+  name: String
+  tier: SubscriptionTier
+  since: Time
+  description: String
+  website: String
+  logo: String
+}
+
 type Mutation {
   createSponsor(input: NewSponsor!): Sponsor!
+  updateSponsor(id: ID!, input: UpdatedSponsor!): Sponsor!
 }

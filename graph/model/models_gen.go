@@ -32,6 +32,15 @@ type SponsorFilter struct {
 	Tiers []SubscriptionTier `json:"tiers"`
 }
 
+type UpdatedSponsor struct {
+	Name        *string           `json:"name"`
+	Tier        *SubscriptionTier `json:"tier"`
+	Since       *time.Time        `json:"since"`
+	Description *string           `json:"description"`
+	Website     *string           `json:"website"`
+	Logo        *string           `json:"logo"`
+}
+
 type SubscriptionTier string
 
 const (

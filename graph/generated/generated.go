@@ -46,6 +46,7 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreateSponsor func(childComplexity int, input model.NewSponsor) int
+		UpdateSponsor func(childComplexity int, id string, input model.UpdatedSponsor) int
 	}
 
 	Query struct {
@@ -65,6 +66,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateSponsor(ctx context.Context, input model.NewSponsor) (*model.Sponsor, error)
+	UpdateSponsor(ctx context.Context, id string, input model.UpdatedSponsor) (*model.Sponsor, error)
 }
 type QueryResolver interface {
 	Sponsors(ctx context.Context, filter *model.SponsorFilter) ([]*model.Sponsor, error)
@@ -96,6 +98,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.CreateSponsor(childComplexity, args["input"].(model.NewSponsor)), true
+
+	case "Mutation.updateSponsor":
+		if e.complexity.Mutation.UpdateSponsor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateSponsor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateSponsor(childComplexity, args["id"].(string), args["input"].(model.UpdatedSponsor)), true
 
 	case "Query.sponsors":
 		if e.complexity.Query.Sponsors == nil {
@@ -258,8 +272,18 @@ input NewSponsor {
   logo: String
 }
 
+input UpdatedSponsor {
+  name: String
+  tier: SubscriptionTier
+  since: Time
+  description: String
+  website: String
+  logo: String
+}
+
 type Mutation {
   createSponsor(input: NewSponsor!): Sponsor!
+  updateSponsor(id: ID!, input: UpdatedSponsor!): Sponsor!
 }
 `, BuiltIn: false},
 }
@@ -281,6 +305,30 @@ func (ec *executionContext) field_Mutation_createSponsor_args(ctx context.Contex
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updateSponsor_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 model.UpdatedSponsor
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg1, err = ec.unmarshalNUpdatedSponsor2githubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg1
 	return args, nil
 }
 
@@ -378,6 +426,48 @@ func (ec *executionContext) _Mutation_createSponsor(ctx context.Context, field g
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().CreateSponsor(rctx, args["input"].(model.NewSponsor))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Sponsor)
+	fc.Result = res
+	return ec.marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_updateSponsor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_updateSponsor_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdateSponsor(rctx, args["id"].(string), args["input"].(model.UpdatedSponsor))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2015,6 +2105,69 @@ func (ec *executionContext) unmarshalInputSponsorFilter(ctx context.Context, obj
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUpdatedSponsor(ctx context.Context, obj interface{}) (model.UpdatedSponsor, error) {
+	var it model.UpdatedSponsor
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	for k, v := range asMap {
+		switch k {
+		case "name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+			it.Name, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "tier":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tier"))
+			it.Tier, err = ec.unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "since":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("since"))
+			it.Since, err = ec.unmarshalOTime2ᚖtimeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "description":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			it.Description, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "website":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("website"))
+			it.Website, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "logo":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("logo"))
+			it.Logo, err = ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -2045,6 +2198,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "createSponsor":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createSponsor(ctx, field)
+			}
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
+
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "updateSponsor":
+			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateSponsor(ctx, field)
 			}
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, innerFunc)
@@ -2768,6 +2931,11 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
+func (ec *executionContext) unmarshalNUpdatedSponsor2githubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx context.Context, v interface{}) (model.UpdatedSponsor, error) {
+	res, err := ec.unmarshalInputUpdatedSponsor(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -3136,6 +3304,22 @@ func (ec *executionContext) marshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThr
 	}
 
 	return ret
+}
+
+func (ec *executionContext) unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, v interface{}) (*model.SubscriptionTier, error) {
+	if v == nil {
+		return nil, nil
+	}
+	var res = new(model.SubscriptionTier)
+	err := res.UnmarshalGQL(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋsponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, sel ast.SelectionSet, v *model.SubscriptionTier) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	return v
 }
 
 func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {

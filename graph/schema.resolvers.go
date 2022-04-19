@@ -15,6 +15,10 @@ func (r *mutationResolver) CreateSponsor(ctx context.Context, input model.NewSpo
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input model.UpdatedSponsor) (*model.Sponsor, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter) ([]*model.Sponsor, error) {
 	panic(fmt.Errorf("not implemented"))
 }
