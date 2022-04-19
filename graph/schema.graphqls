@@ -1,28 +1,39 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+scalar Time
 
-type Todo {
-  id: ID!
-  text: String!
-  done: Boolean!
-  user: User!
-}
-
-type User {
+type Sponsor {
   id: ID!
   name: String!
+  tier: SubscriptionTier!
+  since: Time!
+  description: String
+  website: String
+  logo: String
+}
+
+enum SubscriptionTier {
+    BRONZE
+    SILVER
+    GOLD
+    PLATINUM
+}
+
+input SponsorFilter {
+    tiers: [SubscriptionTier!]
 }
 
 type Query {
-  todos: [Todo!]!
+  sponsors(filter: SponsorFilter): [Sponsor!]!
 }
 
-input NewTodo {
-  text: String!
-  userId: String!
+input NewSponsor {
+  name: String!
+  tier: SubscriptionTier!
+  since: Time
+  description: String
+  website: String
+  logo: String
 }
 
 type Mutation {
-  createTodo(input: NewTodo!): Todo!
+  createSponsor(input: NewSponsor!): Sponsor!
 }
