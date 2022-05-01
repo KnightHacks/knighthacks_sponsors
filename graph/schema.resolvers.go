@@ -7,8 +7,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/LockedThread/sponsors/graph/generated"
-	"github.com/LockedThread/sponsors/graph/model"
+	"github.com/LockedThread/knighthacks_sponsors/graph/generated"
+	"github.com/LockedThread/knighthacks_sponsors/graph/model"
 )
 
 func (r *mutationResolver) CreateSponsor(ctx context.Context, input model.NewSponsor) (*model.Sponsor, error) {
