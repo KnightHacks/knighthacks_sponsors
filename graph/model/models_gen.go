@@ -28,6 +28,8 @@ type Sponsor struct {
 	Logo        *string          `json:"logo"`
 }
 
+func (Sponsor) IsEntity() {}
+
 type SponsorFilter struct {
 	Tiers []SubscriptionTier `json:"tiers"`
 }
