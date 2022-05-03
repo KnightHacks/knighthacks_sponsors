@@ -1,4 +1,4 @@
-module github.com/LockedThread/knighthacks_sponsors
+module github.com/KnightHacks/knighthacks_sponsors
 
 go 1.18
 

@@ -15,7 +15,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/plugin/federation/fedruntime"
-	"github.com/LockedThread/knighthacks_sponsors/graph/model"
+	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -405,7 +405,7 @@ func (ec *executionContext) field_Mutation_createSponsor_args(ctx context.Contex
 	var arg0 model.NewSponsor
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewSponsor2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐNewSponsor(ctx, tmp)
+		arg0, err = ec.unmarshalNNewSponsor2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐNewSponsor(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -429,7 +429,7 @@ func (ec *executionContext) field_Mutation_updateSponsor_args(ctx context.Contex
 	var arg1 model.UpdatedSponsor
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg1, err = ec.unmarshalNUpdatedSponsor2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx, tmp)
+		arg1, err = ec.unmarshalNUpdatedSponsor2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -474,7 +474,7 @@ func (ec *executionContext) field_Query_sponsors_args(ctx context.Context, rawAr
 	var arg0 *model.SponsorFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalOSponsorFilter2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorFilter(ctx, tmp)
+		arg0, err = ec.unmarshalOSponsorFilter2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -549,7 +549,7 @@ func (ec *executionContext) _Entity_findSponsorByID(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Sponsor)
 	fc.Result = res
-	return ec.marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
+	return ec.marshalNSponsor2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Entity_findSponsorByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -620,7 +620,7 @@ func (ec *executionContext) _Mutation_createSponsor(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Sponsor)
 	fc.Result = res
-	return ec.marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
+	return ec.marshalNSponsor2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_createSponsor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -691,7 +691,7 @@ func (ec *executionContext) _Mutation_updateSponsor(ctx context.Context, field g
 	}
 	res := resTmp.(*model.Sponsor)
 	fc.Result = res
-	return ec.marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
+	return ec.marshalNSponsor2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_updateSponsor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -762,7 +762,7 @@ func (ec *executionContext) _Query_sponsors(ctx context.Context, field graphql.C
 	}
 	res := resTmp.([]*model.Sponsor)
 	fc.Result = res
-	return ec.marshalNSponsor2ᚕᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorᚄ(ctx, field.Selections, res)
+	return ec.marshalNSponsor2ᚕᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_sponsors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1153,7 +1153,7 @@ func (ec *executionContext) _Sponsor_tier(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(model.SubscriptionTier)
 	fc.Result = res
-	return ec.marshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, field.Selections, res)
+	return ec.marshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Sponsor_tier(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3171,7 +3171,7 @@ func (ec *executionContext) unmarshalInputNewSponsor(ctx context.Context, obj in
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tier"))
-			it.Tier, err = ec.unmarshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, v)
+			it.Tier, err = ec.unmarshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3226,7 +3226,7 @@ func (ec *executionContext) unmarshalInputSponsorFilter(ctx context.Context, obj
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tiers"))
-			it.Tiers, err = ec.unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx, v)
+			it.Tiers, err = ec.unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3257,7 +3257,7 @@ func (ec *executionContext) unmarshalInputUpdatedSponsor(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tier"))
-			it.Tier, err = ec.unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, v)
+			it.Tier, err = ec.unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3969,16 +3969,16 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewSponsor2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐNewSponsor(ctx context.Context, v interface{}) (model.NewSponsor, error) {
+func (ec *executionContext) unmarshalNNewSponsor2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐNewSponsor(ctx context.Context, v interface{}) (model.NewSponsor, error) {
 	res, err := ec.unmarshalInputNewSponsor(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNSponsor2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx context.Context, sel ast.SelectionSet, v model.Sponsor) graphql.Marshaler {
+func (ec *executionContext) marshalNSponsor2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx context.Context, sel ast.SelectionSet, v model.Sponsor) graphql.Marshaler {
 	return ec._Sponsor(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNSponsor2ᚕᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Sponsor) graphql.Marshaler {
+func (ec *executionContext) marshalNSponsor2ᚕᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Sponsor) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -4002,7 +4002,7 @@ func (ec *executionContext) marshalNSponsor2ᚕᚖgithubᚗcomᚋLockedThreadᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, sel, v[i])
+			ret[i] = ec.marshalNSponsor2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4022,7 +4022,7 @@ func (ec *executionContext) marshalNSponsor2ᚕᚖgithubᚗcomᚋLockedThreadᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalNSponsor2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx context.Context, sel ast.SelectionSet, v *model.Sponsor) graphql.Marshaler {
+func (ec *executionContext) marshalNSponsor2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsor(ctx context.Context, sel ast.SelectionSet, v *model.Sponsor) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
@@ -4047,13 +4047,13 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) unmarshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, v interface{}) (model.SubscriptionTier, error) {
+func (ec *executionContext) unmarshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, v interface{}) (model.SubscriptionTier, error) {
 	var res model.SubscriptionTier
 	err := res.UnmarshalGQL(v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, sel ast.SelectionSet, v model.SubscriptionTier) graphql.Marshaler {
+func (ec *executionContext) marshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, sel ast.SelectionSet, v model.SubscriptionTier) graphql.Marshaler {
 	return v
 }
 
@@ -4072,7 +4072,7 @@ func (ec *executionContext) marshalNTime2timeᚐTime(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalNUpdatedSponsor2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx context.Context, v interface{}) (model.UpdatedSponsor, error) {
+func (ec *executionContext) unmarshalNUpdatedSponsor2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐUpdatedSponsor(ctx context.Context, v interface{}) (model.UpdatedSponsor, error) {
 	res, err := ec.unmarshalInputUpdatedSponsor(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -4466,7 +4466,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return res
 }
 
-func (ec *executionContext) unmarshalOSponsorFilter2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorFilter(ctx context.Context, v interface{}) (*model.SponsorFilter, error) {
+func (ec *executionContext) unmarshalOSponsorFilter2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSponsorFilter(ctx context.Context, v interface{}) (*model.SponsorFilter, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4500,7 +4500,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return res
 }
 
-func (ec *executionContext) unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx context.Context, v interface{}) ([]model.SubscriptionTier, error) {
+func (ec *executionContext) unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx context.Context, v interface{}) ([]model.SubscriptionTier, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4512,7 +4512,7 @@ func (ec *executionContext) unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedT
 	res := make([]model.SubscriptionTier, len(vSlice))
 	for i := range vSlice {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, vSlice[i])
+		res[i], err = ec.unmarshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, vSlice[i])
 		if err != nil {
 			return nil, err
 		}
@@ -4520,7 +4520,7 @@ func (ec *executionContext) unmarshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedT
 	return res, nil
 }
 
-func (ec *executionContext) marshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx context.Context, sel ast.SelectionSet, v []model.SubscriptionTier) graphql.Marshaler {
+func (ec *executionContext) marshalOSubscriptionTier2ᚕgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTierᚄ(ctx context.Context, sel ast.SelectionSet, v []model.SubscriptionTier) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -4547,7 +4547,7 @@ func (ec *executionContext) marshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThr
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNSubscriptionTier2githubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, sel, v[i])
+			ret[i] = ec.marshalNSubscriptionTier2githubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -4567,7 +4567,7 @@ func (ec *executionContext) marshalOSubscriptionTier2ᚕgithubᚗcomᚋLockedThr
 	return ret
 }
 
-func (ec *executionContext) unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, v interface{}) (*model.SubscriptionTier, error) {
+func (ec *executionContext) unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, v interface{}) (*model.SubscriptionTier, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -4576,7 +4576,7 @@ func (ec *executionContext) unmarshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedT
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOSubscriptionTier2ᚖgithubᚗcomᚋLockedThreadᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, sel ast.SelectionSet, v *model.SubscriptionTier) graphql.Marshaler {
+func (ec *executionContext) marshalOSubscriptionTier2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sponsorsᚋgraphᚋmodelᚐSubscriptionTier(ctx context.Context, sel ast.SelectionSet, v *model.SubscriptionTier) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
