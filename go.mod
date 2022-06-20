@@ -3,10 +3,10 @@ module github.com/KnightHacks/knighthacks_sponsors
 go 1.18
 
 require (
-	github.com/99designs/gqlgen v0.17.5
+	github.com/99designs/gqlgen v0.17.10
 	github.com/KnightHacks/knighthacks_shared v0.0.0-20220618230148-0a99b28f9af9
 	github.com/jackc/pgx/v4 v4.16.1
-	github.com/vektah/gqlparser/v2 v2.4.2
+	github.com/vektah/gqlparser/v2 v2.4.5
 )
 
 require (
@@ -22,6 +22,6 @@ require (
 	github.com/jackc/pgtype v1.11.0 // indirect
 	github.com/jackc/puddle v1.2.1 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
-	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e // indirect
 	golang.org/x/text v0.3.7 // indirect
 )
