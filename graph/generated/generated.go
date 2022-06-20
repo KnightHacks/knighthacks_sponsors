@@ -78,7 +78,7 @@ type ComplexityRoot struct {
 }
 
 type EntityResolver interface {
-	FindSponsorByID(ctx context.Context, obj fedruntime.Entity, id string) (*model.Sponsor, error)
+	FindSponsorByID(ctx context.Context, id string) (*model.Sponsor, error)
 }
 type MutationResolver interface {
 	CreateSponsor(ctx context.Context, input model.NewSponsor) (*model.Sponsor, error)
@@ -297,7 +297,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
-	{Name: "graph/schema.graphqls", Input: `scalar Time
+	{Name: "../schema.graphqls", Input: `scalar Time
 
 type Sponsor @key(fields: "id") {
   id: ID!
@@ -347,7 +347,7 @@ type Mutation {
   updateSponsor(id: ID!, input: UpdatedSponsor!): Sponsor!
 }
 `, BuiltIn: false},
-	{Name: "federation/directives.graphql", Input: `
+	{Name: "../../federation/directives.graphql", Input: `
 	scalar _Any
 	scalar _FieldSet
 	
@@ -358,7 +358,7 @@ type Mutation {
 
 	directive @key(fields: _FieldSet!) repeatable on OBJECT | INTERFACE
 `, BuiltIn: true},
-	{Name: "federation/entity.graphql", Input: `
+	{Name: "../../federation/entity.graphql", Input: `
 # a union of all types that use the @key directive
 union _Entity = Sponsor
 
@@ -521,7 +521,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Entity_findSponsorByID(ctx context.Context, field graphql.CollectedField, obj fedruntime.Entity) (ret graphql.Marshaler) {
+func (ec *executionContext) _Entity_findSponsorByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Entity_findSponsorByID(ctx, field)
 	if err != nil {
 		return graphql.Null
@@ -535,7 +535,7 @@ func (ec *executionContext) _Entity_findSponsorByID(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Entity().FindSponsorByID(rctx, obj, fc.Args["id"].(string))
+		return ec.resolvers.Entity().FindSponsorByID(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3325,11 +3325,20 @@ func (ec *executionContext) __Entity(ctx context.Context, sel ast.SelectionSet, 
 
 var entityImplementors = []string{"Entity"}
 
-func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet, obj fedruntime.Entity) graphql.Marshaler {
+func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, entityImplementors)
+	ctx = graphql.WithFieldContext(ctx, &graphql.FieldContext{
+		Object: "Entity",
+	})
+
 	out := graphql.NewFieldSet(fields)
 	var invalids uint32
 	for i, field := range fields {
+		innerCtx := graphql.WithRootFieldContext(ctx, &graphql.RootFieldContext{
+			Object: field.Name,
+			Field:  field,
+		})
+
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Entity")
@@ -3342,16 +3351,19 @@ func (ec *executionContext) _Entity(ctx context.Context, sel ast.SelectionSet, o
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Entity_findSponsorByID(ctx, field, obj)
+				res = ec._Entity_findSponsorByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
 				return res
 			}
 
-			out.Concurrently(i, func() graphql.Marshaler {
-				return innerFunc(ctx)
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
+			}
 
+			out.Concurrently(i, func() graphql.Marshaler {
+				return rrm(innerCtx)
 			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
