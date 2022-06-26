@@ -19,6 +19,10 @@ func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input m
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *mutationResolver) DeleteSponsor(ctx context.Context, id string) (bool, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter) ([]*model.Sponsor, error) {
 	panic(fmt.Errorf("not implemented"))
 }

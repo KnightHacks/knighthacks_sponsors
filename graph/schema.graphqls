@@ -67,6 +67,7 @@ input UpdatedSponsor {
 }
 
 type Mutation {
-  createSponsor(input: NewSponsor!): Sponsor!
-  updateSponsor(id: ID!, input: UpdatedSponsor!): Sponsor!
+  createSponsor(input: NewSponsor!): Sponsor! @hasRole(role: ADMIN)
+  updateSponsor(id: ID!, input: UpdatedSponsor!): Sponsor! @hasRole(role: ADMIN)
+  deleteSponsor(id: ID!): Boolean! @hasRole(role: ADMIN)
 }
