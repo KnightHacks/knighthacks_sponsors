@@ -2,7 +2,11 @@ package main
 
 import (
 	"context"
+	"errors"
+	"github.com/KnightHacks/knighthacks_shared/auth"
+	"github.com/KnightHacks/knighthacks_shared/pagination"
 	"github.com/KnightHacks/knighthacks_shared/utils"
+	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/KnightHacks/knighthacks_sponsors/repository"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"log"
@@ -28,7 +32,29 @@ func main() {
 		log.Fatalf("Unable to connect to database: %v\n", err)
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{Repository: repository.NewDatabaseRepository(pool)}}))
+	databaseRepository := repository.NewDatabaseRepository(pool)
+
+	hasRoleDirective := auth.HasRoleDirective{GetUserId: func(ctx context.Context, obj interface{}) (string, error) {
+		switch _ := obj.(type) {
+		case *model.Sponsor:
+			// TODO: Sponsor doesn't have a sense of ownership, maybe we should have sponsor linked users?
+			return "", errors.New("this shouldn't happen")
+		default:
+			// shouldn't happen, you must implement the new object with the ID field
+			return "", errors.New("this shouldn't happen")
+		}
+	}}
+
+	config := generated.Config{
+		Resolvers: &graph.Resolver{
+			Repository: databaseRepository,
+		},
+		Directives: generated.DirectiveRoot{
+			HasRole:    hasRoleDirective.Direct,
+			Pagination: pagination.Pagination,
+		},
+	}
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(config))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
