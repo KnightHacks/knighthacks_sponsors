@@ -12,7 +12,9 @@ import (
 )
 
 func (r *entityResolver) FindSponsorByID(ctx context.Context, id string) (*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+	sponsor, err := r.Resolver.Repository.GetSponsor(ctx, id)
+	
+	return sponsor, err
 }
 
 // Entity returns generated.EntityResolver implementation.
