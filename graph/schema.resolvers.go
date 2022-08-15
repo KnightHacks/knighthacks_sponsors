@@ -16,7 +16,11 @@ func (r *mutationResolver) CreateSponsor(ctx context.Context, input model.NewSpo
 }
 
 func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input model.UpdatedSponsor) (*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+	if input.Description == nil && input.Name == nil && input.Logo == nil && input.Tier == nil && input.Website == nil && input.Since == nil {
+		return nil, fmt.Errorf("no field has been updated")
+	}
+
+	return r.Repository.UpdateSponsor(ctx, id, &input)
 }
 
 func (r *mutationResolver) DeleteSponsor(ctx context.Context, id string) (bool, error) {
