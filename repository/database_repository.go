@@ -169,9 +169,22 @@ func (r *DatabaseRepository) UpdateSince(ctx context.Context, id string, sponsor
 	return nil
 }
 
-func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (bool, error) {
+
+	// removes event
+	commandTag, err := r.DatabasePool.Exec(ctx, "DELETE FROM sponsors WHERE id = $1", id)
+
+	// checks if there is an error
+	if err != nil {
+		return false, err
+	}
+	// checking to see if there is 1 row affected for deleted events if not there is an issue
+	if commandTag.RowsAffected() != 1 {
+		return false, SponsorNotFound
+	}
+
+	// if the above conditions dont execute everything is good
+	return true, nil
 }
 
 func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
