@@ -12,7 +12,7 @@ import (
 )
 
 func (r *mutationResolver) CreateSponsor(ctx context.Context, input model.NewSponsor) (*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Repository.CreateSponsor(ctx, &input)
 }
 
 func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input model.UpdatedSponsor) (*model.Sponsor, error) {
