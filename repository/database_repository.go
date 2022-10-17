@@ -15,8 +15,8 @@ var (
 	SponsorNotFound = errors.New("sponsor was not found")
 )
 
-//DatabaseRepository
-//Implements the Repository interface's functions
+// DatabaseRepository
+// Implements the Repository interface's functions
 type DatabaseRepository struct {
 	DatabasePool *pgxpool.Pool
 }
@@ -175,6 +175,5 @@ func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (*mod
 }
 
 func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
-	//TODO implement me
-	panic("implement me")
+	return r.getSponsorWithQueryable(ctx, id, r.DatabasePool)
 }
