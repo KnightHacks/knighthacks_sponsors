@@ -9,6 +9,6 @@ type Repository interface {
 	CreateSponsor(ctx context.Context, input *model.NewSponsor) (*model.Sponsor, error)
 	UpdateSponsor(ctx context.Context, id string, input *model.UpdatedSponsor) (*model.Sponsor, error)
 	DeleteSponsor(ctx context.Context, id string) (bool, error)
-	Sponsors(ctx context.Context)
+	GetSponsors(ctx context.Context, first int, after string) ([]*model.Sponsor, int, error)
 	GetSponsor(ctx context.Context, id string) (*model.Sponsor, error)
 }

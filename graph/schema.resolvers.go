@@ -7,6 +7,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/KnightHacks/knighthacks_shared/pagination"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/generated"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 )
@@ -27,8 +28,21 @@ func (r *mutationResolver) DeleteSponsor(ctx context.Context, id string) (bool, 
 	return r.Repository.DeleteSponsor(ctx, id)
 }
 
-func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter) ([]*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter, first int, after *string) (*model.SponsorsConnection, error) {
+	a, err := pagination.DecodeCursor(after)
+	if err != nil {
+		return nil, err
+	}
+	sponsors, total, err := r.Repository.GetSponsors(ctx, first, a)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.SponsorsConnection{
+		TotalCount: total,
+		PageInfo:   pagination.GetPageInfo(sponsors[0].ID, sponsors[len(sponsors)-1].ID),
+		Users:      sponsors,
+	}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

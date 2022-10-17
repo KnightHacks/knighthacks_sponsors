@@ -190,3 +190,8 @@ func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (bool
 func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
 	return r.getSponsorWithQueryable(ctx, id, r.DatabasePool)
 }
+
+func (r *DatabaseRepository) GetSponsors(ctx context.Context, first int, after string) ([]*model.Sponsor, int, error) {
+	//TODO implement me
+	panic("implement me")
+}
