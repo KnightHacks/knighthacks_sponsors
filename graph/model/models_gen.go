@@ -43,7 +43,7 @@ type SponsorFilter struct {
 type SponsorsConnection struct {
 	TotalCount int              `json:"totalCount"`
 	PageInfo   *models.PageInfo `json:"pageInfo"`
-	Users      []*Sponsor       `json:"users"`
+	Sponsors   []*Sponsor       `json:"sponsors"`
 }
 
 func (SponsorsConnection) IsConnection() {}

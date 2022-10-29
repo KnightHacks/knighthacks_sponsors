@@ -83,8 +83,8 @@ type ComplexityRoot struct {
 
 	SponsorsConnection struct {
 		PageInfo   func(childComplexity int) int
+		Sponsors   func(childComplexity int) int
 		TotalCount func(childComplexity int) int
-		Users      func(childComplexity int) int
 	}
 
 	_Service struct {
@@ -268,19 +268,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SponsorsConnection.PageInfo(childComplexity), true
 
+	case "SponsorsConnection.sponsors":
+		if e.complexity.SponsorsConnection.Sponsors == nil {
+			break
+		}
+
+		return e.complexity.SponsorsConnection.Sponsors(childComplexity), true
+
 	case "SponsorsConnection.totalCount":
 		if e.complexity.SponsorsConnection.TotalCount == nil {
 			break
 		}
 
 		return e.complexity.SponsorsConnection.TotalCount(childComplexity), true
-
-	case "SponsorsConnection.users":
-		if e.complexity.SponsorsConnection.Users == nil {
-			break
-		}
-
-		return e.complexity.SponsorsConnection.Users(childComplexity), true
 
 	case "_Service.sdl":
 		if e.complexity._Service.SDL == nil {
@@ -396,7 +396,7 @@ type SponsorsConnection implements Connection {
     totalCount: Int!
     pageInfo: PageInfo!
 
-    users: [Sponsor!]!
+    sponsors: [Sponsor!]!
 }
 
 type Sponsor @key(fields: "id") {
@@ -1514,7 +1514,7 @@ func (ec *executionContext) _SponsorsConnection_pageInfo(ctx context.Context, fi
 	return ec.marshalNPageInfo2ᚖgithubᚗcomᚋKnightHacksᚋknighthacks_sharedᚋmodelsᚐPageInfo(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _SponsorsConnection_users(ctx context.Context, field graphql.CollectedField, obj *model.SponsorsConnection) (ret graphql.Marshaler) {
+func (ec *executionContext) _SponsorsConnection_sponsors(ctx context.Context, field graphql.CollectedField, obj *model.SponsorsConnection) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -1532,7 +1532,7 @@ func (ec *executionContext) _SponsorsConnection_users(ctx context.Context, field
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Users, nil
+		return obj.Sponsors, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3335,9 +3335,9 @@ func (ec *executionContext) _SponsorsConnection(ctx context.Context, sel ast.Sel
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "users":
+		case "sponsors":
 			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._SponsorsConnection_users(ctx, field, obj)
+				return ec._SponsorsConnection_sponsors(ctx, field, obj)
 			}
 
 			out.Values[i] = innerFunc(ctx)

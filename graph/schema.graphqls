@@ -41,7 +41,7 @@ type SponsorsConnection implements Connection {
     totalCount: Int!
     pageInfo: PageInfo!
 
-    users: [Sponsor!]!
+    sponsors: [Sponsor!]!
 }
 
 type Sponsor @key(fields: "id") {
