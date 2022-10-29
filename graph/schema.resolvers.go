@@ -7,12 +7,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/KnightHacks/knighthacks_shared/pagination"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/generated"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 )
 
 func (r *mutationResolver) CreateSponsor(ctx context.Context, input model.NewSponsor) (*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Repository.CreateSponsor(ctx, &input)
 }
 
 func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input model.UpdatedSponsor) (*model.Sponsor, error) {
@@ -24,11 +25,24 @@ func (r *mutationResolver) UpdateSponsor(ctx context.Context, id string, input m
 }
 
 func (r *mutationResolver) DeleteSponsor(ctx context.Context, id string) (bool, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.Repository.DeleteSponsor(ctx, id)
 }
 
-func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter) ([]*model.Sponsor, error) {
-	panic(fmt.Errorf("not implemented"))
+func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilter, first int, after *string) (*model.SponsorsConnection, error) {
+	a, err := pagination.DecodeCursor(after)
+	if err != nil {
+		return nil, err
+	}
+	sponsors, total, err := r.Repository.GetSponsors(ctx, first, a)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.SponsorsConnection{
+		TotalCount: total,
+		PageInfo:   pagination.GetPageInfo(sponsors[0].ID, sponsors[len(sponsors)-1].ID),
+		Sponsors:   sponsors,
+	}, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

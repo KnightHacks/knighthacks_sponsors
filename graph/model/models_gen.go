@@ -7,7 +7,13 @@ import (
 	"io"
 	"strconv"
 	"time"
+
+	"github.com/KnightHacks/knighthacks_shared/models"
 )
+
+type Connection interface {
+	IsConnection()
+}
 
 type NewSponsor struct {
 	Name        string           `json:"name"`
@@ -33,6 +39,14 @@ func (Sponsor) IsEntity() {}
 type SponsorFilter struct {
 	Tiers []SubscriptionTier `json:"tiers"`
 }
+
+type SponsorsConnection struct {
+	TotalCount int              `json:"totalCount"`
+	PageInfo   *models.PageInfo `json:"pageInfo"`
+	Sponsors   []*Sponsor       `json:"sponsors"`
+}
+
+func (SponsorsConnection) IsConnection() {}
 
 type UpdatedSponsor struct {
 	Name        *string           `json:"name"`
