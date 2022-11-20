@@ -191,7 +191,7 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "update Joe Shmoe's 'since' date to 2022/11/9",
+			name: "update 'Joe Shmoe's Woodworking' to 'Joe Shmoe's Wood Working'",
 			args: args{
 				ctx:         context.Background(),
 				id:          "2",
