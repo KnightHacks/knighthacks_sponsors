@@ -94,34 +94,6 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 	}
 }
 
-func TestDatabaseRepository_GetSponsor(t *testing.T) {
-	type args struct {
-		ctx context.Context
-		id  string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *model.Sponsor
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			got, err := databaseRepository.GetSponsor(tt.args.ctx, tt.args.id)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("GetSponsor() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSponsor() got = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestDatabaseRepository_GetSponsors(t *testing.T) {
 
 	type args struct {
@@ -339,6 +311,67 @@ func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := databaseRepository.UpdateWebsite(tt.args.ctx, tt.args.id, tt.args.sponsorSite, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateWebsite() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestDatabaseRepository_GetSponsor(t *testing.T) {
+	type args struct {
+		ctx context.Context
+		id  string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    *model.Sponsor
+		wantErr bool
+	}{
+		{
+			name: "get billy bob",
+			args: args{
+				ctx: context.Background(),
+				id:  "1",
+			},
+			want: &model.Sponsor{
+				ID:          "1",
+				Name:        "Billy Bob LLC",
+				Tier:        model.SubscriptionTierPlatinum,
+				Since:       time.Date(2022, 11, 9, 0, 0, 0, 0, time.UTC),
+				Description: utils.Ptr("loves coding"),
+				Website:     utils.Ptr("billybob.com"),
+			},
+			wantErr: false,
+		},
+		{
+			name: "get -1 ID",
+			args: args{
+				ctx: context.Background(),
+				id:  "-1",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "get invalid sponsor",
+			args: args{
+				ctx: context.Background(),
+				id:  "2389472938",
+			},
+			want:    nil,
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			got, err := databaseRepository.GetSponsor(tt.args.ctx, tt.args.id)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetSponsor() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetSponsor() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
