@@ -395,7 +395,7 @@ func TestDatabaseRepository_getSponsorWithQueryable(t *testing.T) {
 			r := &repository.DatabaseRepository{
 				DatabasePool: tt.fields.DatabasePool,
 			}
-			got, err := r.getSponsorWithQueryable(tt.args.ctx, tt.args.id, tt.args.queryable)
+			got, err := r.GetSponsorWithQueryable(tt.args.ctx, tt.args.id, tt.args.queryable)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getSponsorWithQueryable() error = %v, wantErr %v", err, tt.wantErr)
 				return

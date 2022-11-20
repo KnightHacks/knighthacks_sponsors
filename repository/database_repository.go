@@ -32,7 +32,7 @@ func (r *DatabaseRepository) CreateSponsor(ctx context.Context, input *model.New
 	panic("implement me")
 }
 
-func (r *DatabaseRepository) getSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
+func (r *DatabaseRepository) GetSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
 	var sponsor model.Sponsor
 	err := queryable.QueryRow(ctx, "SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id = $1", id).Scan(&sponsor.ID, &sponsor.Description,
 		&sponsor.Name, &sponsor.Logo, &sponsor.Tier, &sponsor.Website, &sponsor.Since)
@@ -91,7 +91,7 @@ func (r *DatabaseRepository) UpdateSponsor(ctx context.Context, id string, input
 				return err
 			}
 		}
-		sponsor, err = r.getSponsorWithQueryable(ctx, id, tx)
+		sponsor, err = r.GetSponsorWithQueryable(ctx, id, tx)
 		if err != nil {
 			return err
 		}
@@ -188,7 +188,7 @@ func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (bool
 }
 
 func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
-	return r.getSponsorWithQueryable(ctx, id, r.DatabasePool)
+	return r.GetSponsorWithQueryable(ctx, id, r.DatabasePool)
 }
 
 func (r *DatabaseRepository) GetSponsors(ctx context.Context, first int, after string) ([]*model.Sponsor, int, error) {
