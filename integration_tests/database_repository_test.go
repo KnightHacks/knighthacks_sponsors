@@ -19,7 +19,7 @@ import (
 var integrationTest = flag.Bool("integration", false, "whether to run integration tests")
 var databaseUri = flag.String("postgres-uri", "postgresql://postgres:test@localhost:5432/postgres", "postgres uri for running integration tests")
 
-var pool *pgxpool.Pool
+var databaseRepository *repository.DatabaseRepository
 
 func TestMain(t *testing.M) {
 	flag.Parse()
@@ -30,26 +30,23 @@ func TestMain(t *testing.M) {
 
 	// connect to database
 	var err error
-	pool, err = database.ConnectWithRetries(*databaseUri)
+	pool, err := database.ConnectWithRetries(*databaseUri)
 	if err != nil {
 		fmt.Printf("unable to connect to database err=%v\n", err)
 		os.Exit(-1)
 	}
 
+	databaseRepository = repository.NewDatabaseRepository(pool)
 	os.Exit(t.Run())
 }
 
 func TestDatabaseRepository_CreateSponsor(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
 	type args struct {
 		ctx   context.Context
 		input *model.NewSponsor
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *model.Sponsor
 		wantErr bool
@@ -58,10 +55,7 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, err := r.CreateSponsor(tt.args.ctx, tt.args.input)
+			got, err := databaseRepository.CreateSponsor(tt.args.ctx, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CreateSponsor() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -74,16 +68,12 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
 	type args struct {
 		ctx context.Context
 		id  string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    bool
 		wantErr bool
@@ -92,10 +82,7 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, err := r.DeleteSponsor(tt.args.ctx, tt.args.id)
+			got, err := databaseRepository.DeleteSponsor(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DeleteSponsor() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -108,16 +95,12 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_GetSponsor(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
 	type args struct {
 		ctx context.Context
 		id  string
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *model.Sponsor
 		wantErr bool
@@ -126,10 +109,8 @@ func TestDatabaseRepository_GetSponsor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, err := r.GetSponsor(tt.args.ctx, tt.args.id)
+
+			got, err := databaseRepository.GetSponsor(tt.args.ctx, tt.args.id)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetSponsor() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -142,9 +123,7 @@ func TestDatabaseRepository_GetSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_GetSponsors(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx   context.Context
 		first int
@@ -152,7 +131,6 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    []*model.Sponsor
 		want1   int
@@ -162,10 +140,8 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, got1, err := r.GetSponsors(tt.args.ctx, tt.args.first, tt.args.after)
+
+			got, got1, err := databaseRepository.GetSponsors(tt.args.ctx, tt.args.first, tt.args.after)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetSponsors() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -181,9 +157,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateDesc(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx         context.Context
 		id          string
@@ -192,7 +166,6 @@ func TestDatabaseRepository_UpdateDesc(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
@@ -200,10 +173,8 @@ func TestDatabaseRepository_UpdateDesc(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateDesc(tt.args.ctx, tt.args.id, tt.args.sponsorDesc, tt.args.tx); (err != nil) != tt.wantErr {
+
+			if err := databaseRepository.UpdateDesc(tt.args.ctx, tt.args.id, tt.args.sponsorDesc, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateDesc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -211,9 +182,7 @@ func TestDatabaseRepository_UpdateDesc(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateLogo(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx         context.Context
 		id          string
@@ -222,7 +191,6 @@ func TestDatabaseRepository_UpdateLogo(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
@@ -230,10 +198,8 @@ func TestDatabaseRepository_UpdateLogo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateLogo(tt.args.ctx, tt.args.id, tt.args.sponsorLogo, tt.args.tx); (err != nil) != tt.wantErr {
+
+			if err := databaseRepository.UpdateLogo(tt.args.ctx, tt.args.id, tt.args.sponsorLogo, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateLogo() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -241,9 +207,7 @@ func TestDatabaseRepository_UpdateLogo(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateName(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx         context.Context
 		id          string
@@ -252,7 +216,6 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
@@ -260,10 +223,8 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateName(tt.args.ctx, tt.args.id, tt.args.sponsorName, tt.args.tx); (err != nil) != tt.wantErr {
+
+			if err := databaseRepository.UpdateName(tt.args.ctx, tt.args.id, tt.args.sponsorName, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateName() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -271,9 +232,7 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateSince(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx          context.Context
 		id           string
@@ -282,7 +241,6 @@ func TestDatabaseRepository_UpdateSince(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
@@ -290,10 +248,8 @@ func TestDatabaseRepository_UpdateSince(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateSince(tt.args.ctx, tt.args.id, tt.args.sponsorSince, tt.args.tx); (err != nil) != tt.wantErr {
+
+			if err := databaseRepository.UpdateSince(tt.args.ctx, tt.args.id, tt.args.sponsorSince, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateSince() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -301,9 +257,7 @@ func TestDatabaseRepository_UpdateSince(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx   context.Context
 		id    string
@@ -311,7 +265,6 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *model.Sponsor
 		wantErr bool
@@ -320,10 +273,8 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, err := r.UpdateSponsor(tt.args.ctx, tt.args.id, tt.args.input)
+
+			got, err := databaseRepository.UpdateSponsor(tt.args.ctx, tt.args.id, tt.args.input)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UpdateSponsor() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -336,9 +287,7 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateTier(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx         context.Context
 		id          string
@@ -347,7 +296,6 @@ func TestDatabaseRepository_UpdateTier(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
@@ -355,10 +303,8 @@ func TestDatabaseRepository_UpdateTier(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateTier(tt.args.ctx, tt.args.id, tt.args.sponsorTier, tt.args.tx); (err != nil) != tt.wantErr {
+
+			if err := databaseRepository.UpdateTier(tt.args.ctx, tt.args.id, tt.args.sponsorTier, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateTier() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -366,9 +312,7 @@ func TestDatabaseRepository_UpdateTier(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx         context.Context
 		id          string
@@ -377,30 +321,23 @@ func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		wantErr bool
 	}{
 		{
 			name: "update Joe Shmoe's website to joe.mama",
-			fields: fields{
-				DatabasePool: pool,
-			},
 			args: args{
 				ctx:         context.Background(),
 				id:          "2",
 				sponsorSite: "joe.mama",
-				tx:          pool,
+				tx:          databaseRepository.DatabasePool,
 			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			if err := r.UpdateWebsite(tt.args.ctx, tt.args.id, tt.args.sponsorSite, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateWebsite(tt.args.ctx, tt.args.id, tt.args.sponsorSite, tt.args.tx); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateWebsite() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -419,9 +356,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 		t.Error("unable to connect to database", err)
 	}
 	//
-	type fields struct {
-		DatabasePool *pgxpool.Pool
-	}
+
 	type args struct {
 		ctx       context.Context
 		id        string
@@ -429,16 +364,12 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 	}
 	tests := []struct {
 		name    string
-		fields  fields
 		args    args
 		want    *model.Sponsor
 		wantErr bool
 	}{
 		{
 			name: "get billy bob",
-			fields: fields{
-				DatabasePool: pool,
-			},
 			args: args{
 				ctx:       context.Background(),
 				id:        "1",
@@ -456,9 +387,6 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 		},
 		{
 			name: "get -1 ID",
-			fields: fields{
-				DatabasePool: pool,
-			},
 			args: args{
 				ctx:       context.Background(),
 				id:        "-1",
@@ -469,9 +397,6 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 		},
 		{
 			name: "get invalid sponsor",
-			fields: fields{
-				DatabasePool: pool,
-			},
 			args: args{
 				ctx:       context.Background(),
 				id:        "2389472938",
@@ -483,10 +408,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			r := &repository.DatabaseRepository{
-				DatabasePool: tt.fields.DatabasePool,
-			}
-			got, err := r.GetSponsorWithQueryable(tt.args.ctx, tt.args.id, tt.args.queryable)
+			got, err := databaseRepository.GetSponsorWithQueryable(tt.args.ctx, tt.args.id, tt.args.queryable)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("getSponsorWithQueryable() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -509,8 +431,8 @@ func TestNewDatabaseRepository(t *testing.T) {
 	}{
 		{
 			name: "default",
-			args: args{databasePool: pool},
-			want: &repository.DatabaseRepository{DatabasePool: pool},
+			args: args{databasePool: databaseRepository.DatabasePool},
+			want: &repository.DatabaseRepository{DatabasePool: databaseRepository.DatabasePool},
 		},
 	}
 	for _, tt := range tests {
