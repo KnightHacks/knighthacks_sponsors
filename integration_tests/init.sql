@@ -122,36 +122,40 @@ create table events
 -- INTEGRATION TEST DATA START
 
 -- TestDatabaseRepository_GetSponsorWithQueryable & TestDatabaseRepository_GetSponsor
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (1::integer, 'Billy Bob LLC'::varchar, 'PLATINUM'::subscription_tier, '2022-11-09'::date,
-        'loves coding'::varchar, 'billybob.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Billy Bob LLC'::varchar, 'PLATINUM'::subscription_tier, '2022-11-09'::date,
+        'loves coding'::varchar, 'billybob.com'::varchar, null::varchar); -- ID = 1
 
 -- TestDatabaseRepository_CreateSponsor, TestDatabaseRepository_UpdateWebsite, TestDatabaseRepository_UpdateSince, TestDatabaseRepository_UpdateTier MUTABLE
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (2::integer, 'Joe Shmoe Woodworking'::varchar, 'BRONZE'::subscription_tier, '2022-10-09'::date,
-        'does wood'::varchar, 'joeshmoe.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Joe Shmoe Woodworking'::varchar, 'BRONZE'::subscription_tier, '2022-10-09'::date,
+        'does wood'::varchar, 'joeshmoe.com'::varchar, null::varchar); -- ID = 2
 
 -- TestDatabaseRepository_GetSponsors
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (3::integer, 'Microsoft'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'microsoft.com'::varchar, null::varchar);
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (4::integer, 'Apple'::varchar, 'GOLD'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'apple.com'::varchar, null::varchar);
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (5::integer, 'Bing'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'bing.com'::varchar, null::varchar);
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (6::integer, 'Oracle'::varchar, 'BRONZE'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'oracle.com'::varchar, null::varchar);
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (7::integer, 'UrMom'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Microsoft'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'microsoft.com'::varchar, null::varchar); -- ID = 3
+
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Apple'::varchar, 'GOLD'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'apple.com'::varchar, null::varchar); -- ID = 4
+
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Bing'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'bing.com'::varchar, null::varchar); -- ID = 5
+
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Oracle'::varchar, 'BRONZE'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'oracle.com'::varchar, null::varchar); -- ID = 6
+
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('UrMom'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar); -- ID = 7
 
 -- TestDatabaseRepository_UpdateSponsor
 
-INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
-VALUES (8::integer, 'abcdef'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
-        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('abcdef'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar); -- ID = 8
 
 -- INTEGRATION TEST DATA END
