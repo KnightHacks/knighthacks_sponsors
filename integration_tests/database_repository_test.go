@@ -99,7 +99,24 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 		want    bool
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "delete Johnson's Reality",
+			args: args{
+				ctx: context.Background(),
+				id:  "9",
+			},
+			want:    true,
+			wantErr: false,
+		},
+		{
+			name: "delete fake sponsor",
+			args: args{
+				ctx: context.Background(),
+				id:  "232784923",
+			},
+			want:    false,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

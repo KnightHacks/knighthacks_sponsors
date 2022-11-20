@@ -158,4 +158,9 @@ INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
 VALUES ('abcdef'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
         'does stuff'::varchar, 'urmom.com'::varchar, null::varchar); -- ID = 8
 
+-- TestDatabaseRepository_DeleteSponsor
+INSERT INTO public.sponsors (name, tier, since, description, website, logo_url)
+VALUES ('Johnson''s Reality'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
+        'does games'::varchar, 'urmom.com'::varchar, null::varchar); -- ID = 9
+
 -- INTEGRATION TEST DATA END
