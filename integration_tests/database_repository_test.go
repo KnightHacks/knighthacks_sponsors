@@ -158,7 +158,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 					Website:     utils.Ptr("urmom.com"),
 				},
 			},
-			want1:   6,
+			want1:   -1,
 			wantErr: false,
 		},
 		{
@@ -187,7 +187,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 					Website:     utils.Ptr("bing.com"),
 				},
 			},
-			want1:   3,
+			want1:   2,
 			wantErr: false,
 		},
 	}
@@ -198,7 +198,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 				t.Errorf("GetSponsors() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if got1 != tt.want1 {
+			if tt.want1 != -1 && got1 != tt.want1 {
 				t.Errorf("GetSponsors() got1 = %v, want %v", got1, tt.want1)
 			}
 			if !reflect.DeepEqual(got, tt.want) {
