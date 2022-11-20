@@ -10,8 +10,7 @@ docker.start.components:
 
 # shutting down docker components
 docker.stop:
-	docker-compose -f docker-compose-test.yaml down
-	docker-compose -f docker-compose-test.yaml rm --force
+	docker-compose -f docker-compose-test.yaml down -v
 
 # this command will trigger integration test
 # INTEGRATION_TEST_SUITE_PATH is used for run specific test in Golang, if it's not specified
