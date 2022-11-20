@@ -208,7 +208,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 					Website:     utils.Ptr("bing.com"),
 				},
 			},
-			want1:   2,
+			want1:   -1,
 			wantErr: false,
 		},
 	}
