@@ -95,7 +95,6 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_GetSponsors(t *testing.T) {
-
 	type args struct {
 		ctx   context.Context
 		first int
@@ -105,24 +104,105 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 		name    string
 		args    args
 		want    []*model.Sponsor
+		filter  *model.SponsorFilter
 		want1   int
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "get 5 sponsors",
+			args: args{
+				ctx:   context.Background(),
+				first: 5,
+				after: "2",
+			},
+			filter: nil,
+			want: []*model.Sponsor{
+				{
+					ID:          "3",
+					Name:        "Microsoft",
+					Tier:        model.SubscriptionTierPlatinum,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("microsoft.com"),
+				},
+				{
+					ID:          "4",
+					Name:        "Apple",
+					Tier:        model.SubscriptionTierGold,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("apple.com"),
+				},
+				{
+					ID:          "5",
+					Name:        "Bing",
+					Tier:        model.SubscriptionTierPlatinum,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("bing.com"),
+				},
+				{
+					ID:          "6",
+					Name:        "Oracle",
+					Tier:        model.SubscriptionTierBronze,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("oracle.com"),
+				},
+				{
+					ID:          "7",
+					Name:        "UrMom",
+					Tier:        model.SubscriptionTierSilver,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("urmom.com"),
+				},
+			},
+			want1:   5,
+			wantErr: false,
+		},
+		{
+			name: "get 2 sponsors",
+			args: args{
+				ctx:   context.Background(),
+				first: 5,
+				after: "2",
+			},
+			filter: &model.SponsorFilter{Tiers: []model.SubscriptionTier{model.SubscriptionTierPlatinum}},
+			want: []*model.Sponsor{
+				{
+					ID:          "3",
+					Name:        "Microsoft",
+					Tier:        model.SubscriptionTierPlatinum,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("microsoft.com"),
+				},
+				{
+					ID:          "5",
+					Name:        "Bing",
+					Tier:        model.SubscriptionTierPlatinum,
+					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+					Description: utils.Ptr("does stuff"),
+					Website:     utils.Ptr("bing.com"),
+				},
+			},
+			want1:   2,
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			got, got1, err := databaseRepository.GetSponsors(tt.args.ctx, tt.args.first, tt.args.after)
+			got, got1, err := databaseRepository.GetSponsors(tt.args.ctx, tt.filter, tt.args.first, tt.args.after)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetSponsors() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("GetSponsors() got = %v, want %v", got, tt.want)
-			}
 			if got1 != tt.want1 {
 				t.Errorf("GetSponsors() got1 = %v, want %v", got1, tt.want1)
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GetSponsors() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
