@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"github.com/KnightHacks/knighthacks_shared/database"
+	"github.com/KnightHacks/knighthacks_shared/utils"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/KnightHacks/knighthacks_sponsors/repository"
 	"github.com/jackc/pgx/v4"
@@ -372,7 +373,18 @@ func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
 	}
 }
 
-func TestDatabaseRepository_getSponsorWithQueryable(t *testing.T) {
+func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
+	// check if integration testing is disabled
+	if *integrationTest == false {
+		t.Skipf("skipping integration test")
+	}
+
+	// connect to database
+	pool, err := database.ConnectWithRetries(*databaseUri)
+	if err != nil {
+		t.Error("unable to connect to database", err)
+	}
+	//
 	type fields struct {
 		DatabasePool *pgxpool.Pool
 	}
@@ -388,6 +400,26 @@ func TestDatabaseRepository_getSponsorWithQueryable(t *testing.T) {
 		want    *model.Sponsor
 		wantErr bool
 	}{
+		{
+			name: "get billy bob",
+			fields: fields{
+				DatabasePool: pool,
+			},
+			args: args{
+				ctx:       context.Background(),
+				id:        "1",
+				queryable: pool,
+			},
+			want: &model.Sponsor{
+				ID:          "1",
+				Name:        "Billy Bob LLC",
+				Tier:        model.SubscriptionTierPlatinum,
+				Since:       time.Date(2022, 11, 9, 0, 0, 0, 0, time.UTC),
+				Description: utils.Ptr("loves coding"),
+				Website:     utils.Ptr("billybob.com"),
+			},
+			wantErr: false,
+		},
 		// TODO: Add test cases.
 	}
 	for _, tt := range tests {
