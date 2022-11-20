@@ -20,6 +20,13 @@ var databaseUri = flag.String("postgres-uri", "postgresql://postgres:test@localh
 
 var databaseRepository *repository.DatabaseRepository
 
+type Test[A any, T any] struct {
+	name    string
+	args    A
+	want    T
+	wantErr bool
+}
+
 func TestMain(t *testing.M) {
 	flag.Parse()
 	// check if integration testing is disabled
@@ -44,12 +51,8 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 		ctx   context.Context
 		input *model.NewSponsor
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *model.Sponsor
-		wantErr bool
-	}{
+
+	tests := []Test[args, *model.Sponsor]{
 		{
 			name: "create Netflix",
 			args: args{
@@ -93,12 +96,7 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 		ctx context.Context
 		id  string
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    bool
-		wantErr bool
-	}{
+	tests := []Test[args, bool]{
 		{
 			name: "delete Johnson's Reality",
 			args: args{
@@ -134,112 +132,116 @@ func TestDatabaseRepository_DeleteSponsor(t *testing.T) {
 
 func TestDatabaseRepository_GetSponsors(t *testing.T) {
 	type args struct {
-		ctx   context.Context
-		first int
-		after string
+		ctx    context.Context
+		first  int
+		after  string
+		filter *model.SponsorFilter
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []*model.Sponsor
-		filter  *model.SponsorFilter
-		want1   int
-		wantErr bool
-	}{
+	type want struct {
+		sponsors []*model.Sponsor
+		total    int
+	}
+
+	tests := []Test[args, want]{
 		{
 			name: "get 5 sponsors",
 			args: args{
-				ctx:   context.Background(),
-				first: 5,
-				after: "2",
+				ctx:    context.Background(),
+				first:  5,
+				after:  "2",
+				filter: nil,
 			},
-			filter: nil,
-			want: []*model.Sponsor{
-				{
-					ID:          "3",
-					Name:        "Microsoft",
-					Tier:        model.SubscriptionTierPlatinum,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("microsoft.com"),
+			want: want{
+				sponsors: []*model.Sponsor{
+					{
+						ID:          "3",
+						Name:        "Microsoft",
+						Tier:        model.SubscriptionTierPlatinum,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("microsoft.com"),
+					},
+					{
+						ID:          "4",
+						Name:        "Apple",
+						Tier:        model.SubscriptionTierGold,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("apple.com"),
+					},
+					{
+						ID:          "5",
+						Name:        "Bing",
+						Tier:        model.SubscriptionTierPlatinum,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("bing.com"),
+					},
+					{
+						ID:          "6",
+						Name:        "Oracle",
+						Tier:        model.SubscriptionTierBronze,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("oracle.com"),
+					},
+					{
+						ID:          "7",
+						Name:        "UrMom",
+						Tier:        model.SubscriptionTierSilver,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("urmom.com"),
+					},
 				},
-				{
-					ID:          "4",
-					Name:        "Apple",
-					Tier:        model.SubscriptionTierGold,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("apple.com"),
-				},
-				{
-					ID:          "5",
-					Name:        "Bing",
-					Tier:        model.SubscriptionTierPlatinum,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("bing.com"),
-				},
-				{
-					ID:          "6",
-					Name:        "Oracle",
-					Tier:        model.SubscriptionTierBronze,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("oracle.com"),
-				},
-				{
-					ID:          "7",
-					Name:        "UrMom",
-					Tier:        model.SubscriptionTierSilver,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("urmom.com"),
-				},
+				total: -1,
 			},
-			want1:   -1,
+
 			wantErr: false,
 		},
 		{
 			name: "get 2 sponsors",
 			args: args{
-				ctx:   context.Background(),
-				first: 2,
-				after: "2",
+				ctx:    context.Background(),
+				first:  2,
+				after:  "2",
+				filter: &model.SponsorFilter{Tiers: []model.SubscriptionTier{model.SubscriptionTierPlatinum}},
 			},
-			filter: &model.SponsorFilter{Tiers: []model.SubscriptionTier{model.SubscriptionTierPlatinum}},
-			want: []*model.Sponsor{
-				{
-					ID:          "3",
-					Name:        "Microsoft",
-					Tier:        model.SubscriptionTierPlatinum,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("microsoft.com"),
+			want: want{
+				sponsors: []*model.Sponsor{
+					{
+						ID:          "3",
+						Name:        "Microsoft",
+						Tier:        model.SubscriptionTierPlatinum,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("microsoft.com"),
+					},
+					{
+						ID:          "5",
+						Name:        "Bing",
+						Tier:        model.SubscriptionTierPlatinum,
+						Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
+						Description: utils.Ptr("does stuff"),
+						Website:     utils.Ptr("bing.com"),
+					},
 				},
-				{
-					ID:          "5",
-					Name:        "Bing",
-					Tier:        model.SubscriptionTierPlatinum,
-					Since:       time.Date(2000, 10, 10, 0, 0, 0, 0, time.UTC),
-					Description: utils.Ptr("does stuff"),
-					Website:     utils.Ptr("bing.com"),
-				},
+				total: -1,
 			},
-			want1:   -1,
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, got1, err := databaseRepository.GetSponsors(tt.args.ctx, tt.filter, tt.args.first, tt.args.after)
+			got, got1, err := databaseRepository.GetSponsors(tt.args.ctx, tt.args.filter, tt.args.first, tt.args.after)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("GetSponsors() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if tt.want1 != -1 && got1 != tt.want1 {
-				t.Errorf("GetSponsors() got1 = %v, want %v", got1, tt.want1)
+			if tt.want.total != -1 && got1 != tt.want.total {
+				t.Errorf("GetSponsors() got1 = %v, want %v", got1, tt.want)
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if !reflect.DeepEqual(got, tt.want.sponsors) {
 				t.Errorf("GetSponsors() got = %v, want %v", got, tt.want)
 			}
 		})
@@ -253,11 +255,7 @@ func TestDatabaseRepository_UpdateDesc(t *testing.T) {
 		sponsorDesc string
 		queryable   database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update Joe Shmoe's description to ",
 			args: args{
@@ -305,11 +303,7 @@ func TestDatabaseRepository_UpdateLogo(t *testing.T) {
 		sponsorLogo string
 		queryable   database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update Joe Shmoe's logo to a picture of wood",
 			args: args{
@@ -358,11 +352,7 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 		sponsorName string
 		queryable   database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update 'Joe Shmoe's Woodworking' to 'Joe Shmoe's Wood Working'",
 			args: args{
@@ -410,11 +400,7 @@ func TestDatabaseRepository_UpdateSince(t *testing.T) {
 		sponsorSince time.Time
 		queryable    database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update Joe Shmoe's 'since' date to 2022/11/9",
 			args: args{
@@ -462,12 +448,7 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 		id    string
 		input *model.UpdatedSponsor
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *model.Sponsor
-		wantErr bool
-	}{
+	tests := []Test[args, *model.Sponsor]{
 		{
 			name: "update abcdef",
 			args: args{
@@ -533,11 +514,7 @@ func TestDatabaseRepository_UpdateTier(t *testing.T) {
 		sponsorTier model.SubscriptionTier
 		queryable   database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update Joe Shmoe's subscription tier to Silver",
 			args: args{
@@ -580,18 +557,13 @@ func TestDatabaseRepository_UpdateTier(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
-
 	type args struct {
 		ctx         context.Context
 		id          string
 		sponsorSite string
 		tx          database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-	}{
+	tests := []Test[args, any]{
 		{
 			name: "update Joe Shmoe's website to joe.mama",
 			args: args{
@@ -617,12 +589,7 @@ func TestDatabaseRepository_GetSponsor(t *testing.T) {
 		ctx context.Context
 		id  string
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *model.Sponsor
-		wantErr bool
-	}{
+	tests := []Test[args, *model.Sponsor]{
 		{
 			name: "get billy bob",
 			args: args{
@@ -679,12 +646,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 		id        string
 		queryable database.Queryable
 	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *model.Sponsor
-		wantErr bool
-	}{
+	tests := []Test[args, *model.Sponsor]{
 		{
 			name: "get billy bob",
 			args: args{
@@ -741,11 +703,7 @@ func TestNewDatabaseRepository(t *testing.T) {
 	type args struct {
 		databasePool *pgxpool.Pool
 	}
-	tests := []struct {
-		name string
-		args args
-		want *repository.DatabaseRepository
-	}{
+	tests := []Test[args, *repository.DatabaseRepository]{
 		{
 			name: "default",
 			args: args{databasePool: databaseRepository.DatabasePool},
