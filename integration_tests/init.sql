@@ -124,6 +124,11 @@ create table events
 -- TestDatabaseRepository_GetSponsorWithQueryable
 INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
 VALUES (1::integer, 'Billy Bob LLC'::varchar, 'PLATINUM'::subscription_tier, '2022-11-09'::date,
-        'loves coding'::varchar, 'billybob.com'::varchar, null::varchar)
+        'loves coding'::varchar, 'billybob.com'::varchar, null::varchar);
+
+-- TestDatabaseRepository_CreateSponsor
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (2::integer, 'Joe Shmoe Woodworking'::varchar, 'BRONZE'::subscription_tier, '2022-10-09'::date,
+        'does wood'::varchar, 'joeshmoe.com'::varchar, null::varchar);
 
 -- INTEGRATION TEST DATA END
