@@ -50,7 +50,30 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 		want    *model.Sponsor
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "create google",
+			args: args{
+				ctx: context.Background(),
+				input: &model.NewSponsor{
+					Name:        "Google",
+					Tier:        model.SubscriptionTierPlatinum,
+					Since:       utils.Ptr(time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC)),
+					Description: utils.Ptr("does cool stuff"),
+					Website:     utils.Ptr("google.com"),
+					Logo:        nil,
+				},
+			},
+			want: &model.Sponsor{
+				ID:          "",
+				Name:        "Google",
+				Tier:        model.SubscriptionTierPlatinum,
+				Since:       time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC),
+				Description: utils.Ptr("does cool stuff"),
+				Website:     utils.Ptr("google.com"),
+				Logo:        nil,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
