@@ -455,6 +455,23 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "update invalid",
+			args: args{
+				ctx: context.Background(),
+				id:  "2342342",
+				input: &model.UpdatedSponsor{
+					Name:        utils.Ptr("ghijklmnop"),
+					Tier:        utils.Ptr(model.SubscriptionTierPlatinum),
+					Since:       utils.Ptr(time.Date(1999, 11, 11, 0, 0, 0, 0, time.UTC)),
+					Description: utils.Ptr("nope"),
+					Website:     utils.Ptr("google.com"),
+					Logo:        utils.Ptr("nahg.com/img.png"),
+				},
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
