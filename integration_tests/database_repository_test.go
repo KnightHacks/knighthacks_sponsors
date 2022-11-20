@@ -158,14 +158,14 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 					Website:     utils.Ptr("urmom.com"),
 				},
 			},
-			want1:   5,
+			want1:   6,
 			wantErr: false,
 		},
 		{
 			name: "get 2 sponsors",
 			args: args{
 				ctx:   context.Background(),
-				first: 5,
+				first: 2,
 				after: "2",
 			},
 			filter: &model.SponsorFilter{Tiers: []model.SubscriptionTier{model.SubscriptionTierPlatinum}},
@@ -187,7 +187,7 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 					Website:     utils.Ptr("bing.com"),
 				},
 			},
-			want1:   2,
+			want1:   3,
 			wantErr: false,
 		},
 	}
@@ -419,7 +419,6 @@ func TestDatabaseRepository_UpdateSince(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
-
 	type args struct {
 		ctx   context.Context
 		id    string
@@ -431,7 +430,31 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 		want    *model.Sponsor
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update abcdef",
+			args: args{
+				ctx: context.Background(),
+				id:  "8",
+				input: &model.UpdatedSponsor{
+					Name:        utils.Ptr("ghijklmnop"),
+					Tier:        utils.Ptr(model.SubscriptionTierPlatinum),
+					Since:       utils.Ptr(time.Date(1999, 11, 11, 0, 0, 0, 0, time.UTC)),
+					Description: utils.Ptr("nope"),
+					Website:     utils.Ptr("google.com"),
+					Logo:        utils.Ptr("nahg.com/img.png"),
+				},
+			},
+			want: &model.Sponsor{
+				ID:          "8",
+				Name:        "ghijklmnop",
+				Tier:        model.SubscriptionTierPlatinum,
+				Since:       time.Date(1999, 11, 11, 0, 0, 0, 0, time.UTC),
+				Description: utils.Ptr("nope"),
+				Website:     utils.Ptr("google.com"),
+				Logo:        utils.Ptr("nahg.com/img.png"),
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
