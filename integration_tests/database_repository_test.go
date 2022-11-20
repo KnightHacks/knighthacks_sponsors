@@ -129,24 +129,51 @@ func TestDatabaseRepository_GetSponsors(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateDesc(t *testing.T) {
-
 	type args struct {
 		ctx         context.Context
 		id          string
 		sponsorDesc string
-		tx          pgx.Tx
+		queryable   database.Queryable
 	}
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's description to ",
+			args: args{
+				ctx:         context.Background(),
+				id:          "2",
+				sponsorDesc: "fixes the cracks in your wood",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: false,
+		},
+		{
+			name: "update invalid sponsor",
+			args: args{
+				ctx:         context.Background(),
+				id:          "-1",
+				sponsorDesc: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		{
+			name: "update invalid sponsor 2",
+			args: args{
+				ctx:         context.Background(),
+				id:          "1253434",
+				sponsorDesc: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			if err := databaseRepository.UpdateDesc(tt.args.ctx, tt.args.id, tt.args.sponsorDesc, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateDesc(tt.args.ctx, tt.args.id, tt.args.sponsorDesc, tt.args.queryable); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateDesc() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
