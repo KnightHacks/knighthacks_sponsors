@@ -126,10 +126,26 @@ INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_u
 VALUES (1::integer, 'Billy Bob LLC'::varchar, 'PLATINUM'::subscription_tier, '2022-11-09'::date,
         'loves coding'::varchar, 'billybob.com'::varchar, null::varchar);
 
--- TestDatabaseRepository_CreateSponsor, TestDatabaseRepository_UpdateWebsite, TestDatabaseRepository_UpdateSince
+-- TestDatabaseRepository_CreateSponsor, TestDatabaseRepository_UpdateWebsite, TestDatabaseRepository_UpdateSince MUTABLE
 INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
 VALUES (2::integer, 'Joe Shmoe Woodworking'::varchar, 'BRONZE'::subscription_tier, '2022-10-09'::date,
         'does wood'::varchar, 'joeshmoe.com'::varchar, null::varchar);
 
+-- TestDatabaseRepository_GetSponsors
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (3::integer, 'Microsoft'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'microsoft.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (4::integer, 'Apple'::varchar, 'GOLD'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'apple.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (5::integer, 'Bing'::varchar, 'PLATINUM'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'bing.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (6::integer, 'Oracle'::varchar, 'BRONZE'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'oracle.com'::varchar, null::varchar);
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (7::integer, 'UrMom'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar);
 
 -- INTEGRATION TEST DATA END
