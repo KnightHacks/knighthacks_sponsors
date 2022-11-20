@@ -3,12 +3,14 @@ package integration_tests
 import (
 	"context"
 	"flag"
+	"fmt"
 	"github.com/KnightHacks/knighthacks_shared/database"
 	"github.com/KnightHacks/knighthacks_shared/utils"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/KnightHacks/knighthacks_sponsors/repository"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -16,6 +18,26 @@ import (
 
 var integrationTest = flag.Bool("integration", false, "whether to run integration tests")
 var databaseUri = flag.String("postgres-uri", "postgresql://postgres:test@localhost:5432/postgres", "postgres uri for running integration tests")
+
+var pool *pgxpool.Pool
+
+func TestMain(t *testing.M) {
+	flag.Parse()
+	// check if integration testing is disabled
+	if *integrationTest == false {
+		return
+	}
+
+	// connect to database
+	var err error
+	pool, err = database.ConnectWithRetries(*databaseUri)
+	if err != nil {
+		fmt.Printf("unable to connect to database err=%v\n", err)
+		os.Exit(-1)
+	}
+
+	os.Exit(t.Run())
+}
 
 func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 	type fields struct {
@@ -465,17 +487,8 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 }
 
 func TestNewDatabaseRepository(t *testing.T) {
-	if *integrationTest == false {
-		t.Skipf("skipping integration test")
-	}
-
 	type args struct {
 		databasePool *pgxpool.Pool
-	}
-
-	pool, err := database.ConnectWithRetries(*databaseUri)
-	if err != nil {
-		t.Error("unable to connect to database", err)
 	}
 	tests := []struct {
 		name string
