@@ -23,6 +23,27 @@ enum Role @goModel(model: "github.com/KnightHacks/knighthacks_shared/models.Role
     OWNS
 }
 
+interface Connection {
+    # The total number of entries
+    totalCount: Int
+    # Information for paginating this connection
+    pageInfo: PageInfo!
+}
+
+type PageInfo @goModel(model: "github.com/KnightHacks/knighthacks_shared/models.PageInfo") {
+    # the first entry
+    startCursor: String!
+    # the last entry
+    endCursor: String!
+}
+
+type SponsorsConnection implements Connection {
+    totalCount: Int!
+    pageInfo: PageInfo!
+
+    sponsors: [Sponsor!]!
+}
+
 type Sponsor @key(fields: "id") {
   id: ID!
   name: String!
@@ -45,7 +66,7 @@ input SponsorFilter {
 }
 
 type Query {
-  sponsors(filter: SponsorFilter): [Sponsor!]!
+  sponsors(filter: SponsorFilter, first: Int!, after: String): SponsorsConnection! @pagination(maxLength: 25)
 }
 
 input NewSponsor {
