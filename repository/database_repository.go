@@ -8,6 +8,7 @@ import (
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"strconv"
 	"time"
 )
 
@@ -34,8 +35,19 @@ func (r *DatabaseRepository) CreateSponsor(ctx context.Context, input *model.New
 
 func (r *DatabaseRepository) GetSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
 	var sponsor model.Sponsor
-	err := queryable.QueryRow(ctx, "SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id = $1", id).Scan(&sponsor.ID, &sponsor.Description,
-		&sponsor.Name, &sponsor.Logo, &sponsor.Tier, &sponsor.Website, &sponsor.Since)
+	var idInt int
+
+	err := queryable.QueryRow(ctx, "SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id = $1", id).Scan(
+		&idInt,
+		&sponsor.Description,
+		&sponsor.Name,
+		&sponsor.Logo,
+		&sponsor.Tier,
+		&sponsor.Website,
+		&sponsor.Since,
+	)
+
+	sponsor.ID = strconv.Itoa(idInt)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
