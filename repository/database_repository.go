@@ -115,8 +115,8 @@ func (r *DatabaseRepository) UpdateSponsor(ctx context.Context, id string, input
 	return sponsor, nil
 }
 
-func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorDesc string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET description = $1 WHERE id = $2", sponsorDesc, id)
+func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorDesc string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET description = $1 WHERE id = $2", sponsorDesc, id)
 	if err != nil {
 		return err
 	}
@@ -126,8 +126,8 @@ func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorD
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorName string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET name = $1 WHERE id = $2", sponsorName, id)
+func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorName string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET name = $1 WHERE id = $2", sponsorName, id)
 	if err != nil {
 		return err
 	}
@@ -137,8 +137,8 @@ func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorN
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorLogo string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET logo_url = $1 WHERE id = $2", sponsorLogo, id)
+func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorLogo string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET logo_url = $1 WHERE id = $2", sponsorLogo, id)
 	if err != nil {
 		return err
 	}
@@ -148,8 +148,8 @@ func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorL
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorTier model.SubscriptionTier, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET tier = $1 WHERE id = $2", sponsorTier, id)
+func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorTier model.SubscriptionTier, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET tier = $1 WHERE id = $2", sponsorTier, id)
 	if err != nil {
 		return err
 	}
@@ -159,8 +159,8 @@ func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorT
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, sponsorSite string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET website = $1 WHERE id = $2", sponsorSite, id)
+func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, sponsorSite string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET website = $1 WHERE id = $2", sponsorSite, id)
 	if err != nil {
 		return err
 	}
@@ -170,8 +170,8 @@ func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, spons
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateSince(ctx context.Context, id string, sponsorSince time.Time, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET since = $1 WHERE id = $2", sponsorSince, id)
+func (r *DatabaseRepository) UpdateSince(ctx context.Context, id string, sponsorSince time.Time, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET since = $1 WHERE id = $2", sponsorSince, id)
 	if err != nil {
 		return err
 	}
