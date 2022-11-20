@@ -426,7 +426,7 @@ func TestNewDatabaseRepository(t *testing.T) {
 		want *repository.DatabaseRepository
 	}{
 		{
-			name: "",
+			name: "default",
 			args: args{databasePool: pool},
 			want: &repository.DatabaseRepository{DatabasePool: pool},
 		},
