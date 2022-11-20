@@ -14,7 +14,7 @@ import (
 )
 
 var integrationTest = flag.Bool("integration", false, "whether to run integration tests")
-var databaseUri = flag.String("postgres-uri", "postgresql://postgres:test@postgres:5432/postgres", "postgres uri for running integration tests")
+var databaseUri = flag.String("postgres-uri", "postgresql://postgres:test@localhost:5432/postgres", "postgres uri for running integration tests")
 
 func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 	type fields struct {
