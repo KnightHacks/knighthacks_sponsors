@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"strconv"
 	"errors"
 	"fmt"
 	"github.com/KnightHacks/knighthacks_shared/database"
@@ -28,8 +29,28 @@ func NewDatabaseRepository(databasePool *pgxpool.Pool) *DatabaseRepository {
 }
 
 func (r *DatabaseRepository) CreateSponsor(ctx context.Context, input *model.NewSponsor) (*model.Sponsor, error) {
-	//TODO implement me
-	panic("implement me")
+	var sponsorIdInt int
+	err := r.DatabasePool.QueryRow(ctx, "INSERT INTO sponsors (name, tier, since, description, website, logo_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id",
+		&input.Name,
+		&input.Tier,
+		&input.Since,
+		&input.Description,
+		&input.Website,
+		&input.Logo,
+	).Scan(&sponsorIdInt)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Sponsor{
+		ID:          strconv.Itoa(sponsorIdInt),
+		Name:        input.Name,
+		Tier:        input.Tier,
+		Since:       *input.Since,
+		Description: input.Description,
+		Website:     input.Website,
+		Logo:        input.Logo,
+	}, nil
 }
 
 func (r *DatabaseRepository) getSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
