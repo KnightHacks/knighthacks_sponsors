@@ -8,7 +8,6 @@ import (
 	"github.com/KnightHacks/knighthacks_shared/utils"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/KnightHacks/knighthacks_sponsors/repository"
-	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"os"
 	"reflect"
@@ -489,24 +488,52 @@ func TestDatabaseRepository_UpdateSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateTier(t *testing.T) {
-
 	type args struct {
 		ctx         context.Context
 		id          string
 		sponsorTier model.SubscriptionTier
-		tx          pgx.Tx
+		queryable   database.Queryable
 	}
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's subscription tier to Silver",
+			args: args{
+				ctx:         context.Background(),
+				id:          "2",
+				sponsorTier: model.SubscriptionTierSilver,
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: false,
+		},
+		{
+			name: "update invalid sponsor",
+			args: args{
+				ctx:         context.Background(),
+				id:          "-1",
+				sponsorTier: model.SubscriptionTierSilver,
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		{
+			name: "update invalid sponsor 2",
+			args: args{
+				ctx:         context.Background(),
+				id:          "1253434",
+				sponsorTier: model.SubscriptionTierSilver,
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			if err := databaseRepository.UpdateTier(tt.args.ctx, tt.args.id, tt.args.sponsorTier, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateTier(tt.args.ctx, tt.args.id, tt.args.sponsorTier, tt.args.queryable); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateTier() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
