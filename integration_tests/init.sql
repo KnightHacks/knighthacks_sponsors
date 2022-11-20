@@ -148,4 +148,10 @@ INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_u
 VALUES (7::integer, 'UrMom'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
         'does stuff'::varchar, 'urmom.com'::varchar, null::varchar);
 
+-- TestDatabaseRepository_UpdateSponsor
+
+INSERT INTO public.sponsors (id, name, tier, since, description, website, logo_url)
+VALUES (8::integer, 'abcdef'::varchar, 'SILVER'::subscription_tier, '2000-10-10'::date,
+        'does stuff'::varchar, 'urmom.com'::varchar, null::varchar);
+
 -- INTEGRATION TEST DATA END
