@@ -154,24 +154,52 @@ func TestDatabaseRepository_UpdateDesc(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateLogo(t *testing.T) {
-
 	type args struct {
 		ctx         context.Context
 		id          string
 		sponsorLogo string
-		tx          pgx.Tx
+		queryable   database.Queryable
 	}
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's logo to a picture of wood",
+			args: args{
+				ctx:         context.Background(),
+				id:          "2",
+				sponsorLogo: "https://imagesvc.meredithcorp.io/v3/mm/image?q=60&c=sc&poi=face&w=825&h=413&url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F49%2F2017%2F03%2F28%2F100447495.jpg",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: false,
+		},
+		{
+			name: "update invalid sponsor",
+			args: args{
+				ctx:         context.Background(),
+				id:          "-1",
+				sponsorLogo: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		{
+			name: "update invalid sponsor 2",
+			args: args{
+				ctx:         context.Background(),
+				id:          "1253434",
+				sponsorLogo: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			if err := databaseRepository.UpdateLogo(tt.args.ctx, tt.args.id, tt.args.sponsorLogo, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateLogo(tt.args.ctx, tt.args.id, tt.args.sponsorLogo, tt.args.queryable); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateLogo() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
