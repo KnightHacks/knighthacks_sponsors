@@ -18,11 +18,11 @@ docker.stop:
 # it will run all tests under ./it directory
 test.integration:
 	$(MAKE) docker.start.components
-	go test -tags=integration $(INTEGRATION_TEST_PATH) -count=1 -run=$(INTEGRATION_TEST_SUITE_PATH) --integration --postgres-uri=$(POSTGRES_URI)
+	- go test -tags=integration $(INTEGRATION_TEST_PATH) -count=1 -run=$(INTEGRATION_TEST_SUITE_PATH) --integration --postgres-uri=$(POSTGRES_URI)
 	$(MAKE) docker.stop
 
 # this command will trigger integration test with verbose mode
 test.integration.debug:
 	$(MAKE) docker.start.components
-	go test -tags=integration $(INTEGRATION_TEST_PATH) -count=1 -v -run=$(INTEGRATION_TEST_SUITE_PATH) --integration --postgres-uri=$(POSTGRES_URI)
+	- go test -tags=integration $(INTEGRATION_TEST_PATH) -count=1 -v -run=$(INTEGRATION_TEST_SUITE_PATH) --integration --postgres-uri=$(POSTGRES_URI)
 	$(MAKE) docker.stop
