@@ -420,7 +420,32 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 			},
 			wantErr: false,
 		},
-		// TODO: Add test cases.
+		{
+			name: "get -1 ID",
+			fields: fields{
+				DatabasePool: pool,
+			},
+			args: args{
+				ctx:       context.Background(),
+				id:        "-1",
+				queryable: pool,
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "get invalid sponsor",
+			fields: fields{
+				DatabasePool: pool,
+			},
+			args: args{
+				ctx:       context.Background(),
+				id:        "2389472938",
+				queryable: pool,
+			},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
