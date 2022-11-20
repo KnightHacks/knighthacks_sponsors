@@ -204,24 +204,52 @@ func TestDatabaseRepository_UpdateName(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateSince(t *testing.T) {
-
 	type args struct {
 		ctx          context.Context
 		id           string
 		sponsorSince time.Time
-		tx           pgx.Tx
+		queryable    database.Queryable
 	}
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's 'since' date to 2022/11/9",
+			args: args{
+				ctx:          context.Background(),
+				id:           "2",
+				sponsorSince: time.Date(2022, time.November, 9, 0, 0, 0, 0, time.UTC),
+				queryable:    databaseRepository.DatabasePool,
+			},
+			wantErr: false,
+		},
+		{
+			name: "update invalid sponsor",
+			args: args{
+				ctx:          context.Background(),
+				id:           "-1",
+				sponsorSince: time.Date(2022, time.November, 9, 0, 0, 0, 0, time.UTC),
+				queryable:    databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		{
+			name: "update invalid sponsor 2",
+			args: args{
+				ctx:          context.Background(),
+				id:           "1253434",
+				sponsorSince: time.Date(2022, time.November, 9, 0, 0, 0, 0, time.UTC),
+				queryable:    databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		// TODO: Add test cases.}
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			if err := databaseRepository.UpdateSince(tt.args.ctx, tt.args.id, tt.args.sponsorSince, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateSince(tt.args.ctx, tt.args.id, tt.args.sponsorSince, tt.args.queryable); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateSince() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
