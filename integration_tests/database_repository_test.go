@@ -51,25 +51,24 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "create google",
+			name: "create Netflix",
 			args: args{
 				ctx: context.Background(),
 				input: &model.NewSponsor{
-					Name:        "Google",
+					Name:        "Netflix",
 					Tier:        model.SubscriptionTierPlatinum,
 					Since:       utils.Ptr(time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC)),
-					Description: utils.Ptr("does cool stuff"),
-					Website:     utils.Ptr("google.com"),
+					Description: utils.Ptr("movies and stuff"),
+					Website:     utils.Ptr("netflix.com"),
 					Logo:        nil,
 				},
 			},
 			want: &model.Sponsor{
-				ID:          "",
-				Name:        "Google",
+				Name:        "Netflix",
 				Tier:        model.SubscriptionTierPlatinum,
 				Since:       time.Date(1999, 10, 10, 0, 0, 0, 0, time.UTC),
-				Description: utils.Ptr("does cool stuff"),
-				Website:     utils.Ptr("google.com"),
+				Description: utils.Ptr("movies and stuff"),
+				Website:     utils.Ptr("netflix.com"),
 				Logo:        nil,
 			},
 			wantErr: false,
@@ -82,7 +81,7 @@ func TestDatabaseRepository_CreateSponsor(t *testing.T) {
 				t.Errorf("CreateSponsor() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			if !reflect.DeepEqual(got, tt.want) {
+			if got.Name != tt.want.Name || got.Since != tt.want.Since || !reflect.DeepEqual(got.Logo, tt.want.Logo) || !reflect.DeepEqual(got.Description, tt.want.Description) || !reflect.DeepEqual(got.Website, tt.want.Website) {
 				t.Errorf("CreateSponsor() got = %v, want %v", got, tt.want)
 			}
 		})
