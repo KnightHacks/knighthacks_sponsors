@@ -203,7 +203,63 @@ func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.
 	return r.GetSponsorWithQueryable(ctx, id, r.DatabasePool)
 }
 
-func (r *DatabaseRepository) GetSponsors(ctx context.Context, first int, after string) ([]*model.Sponsor, int, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *DatabaseRepository) GetSponsors(ctx context.Context, filter *model.SponsorFilter, first int, after string) (sponsors []*model.Sponsor, total int, err error) {
+	var sql string
+	var variables []any
+	var totalSql string
+	var totalVariables []any
+
+	if filter != nil {
+		stringTiers := make([]string, 0, len(filter.Tiers))
+
+		for _, tier := range filter.Tiers {
+			stringTiers = append(stringTiers, tier.String())
+		}
+
+		sql = `SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE tier = ANY ($1) AND id > $2 LIMIT $3`
+		variables = []any{stringTiers, after, first}
+
+		totalSql = `SELECT COUNT(*) FROM sponsors WHERE tier = ANY ($1) AND id > $2`
+		totalVariables = []any{stringTiers, after}
+	} else {
+		sql = `SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id > $1 LIMIT $2`
+		variables = []any{after, first}
+
+		totalSql = `SELECT COUNT(*) FROM sponsors WHERE id > $1`
+		totalVariables = []any{after}
+	}
+	err = r.DatabasePool.BeginTxFunc(ctx, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		if err := tx.QueryRow(ctx, totalSql, totalVariables...).Scan(&total); err != nil {
+			return err
+		}
+
+		if total > 0 {
+			rows, err := tx.Query(ctx, sql, variables...)
+			if err != nil {
+				return err
+			}
+
+			for rows.Next() {
+				var sponsor model.Sponsor
+				var intId int
+				err = rows.Scan(
+					&intId,
+					&sponsor.Description,
+					&sponsor.Name,
+					&sponsor.Logo,
+					&sponsor.Tier,
+					&sponsor.Website,
+					&sponsor.Since,
+				)
+				if err != nil {
+					return err
+				}
+				sponsor.ID = strconv.Itoa(intId)
+				sponsors = append(sponsors, &sponsor)
+			}
+		}
+		return nil
+	})
+
+	return sponsors, total, err
 }
