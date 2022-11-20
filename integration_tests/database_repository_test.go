@@ -179,24 +179,51 @@ func TestDatabaseRepository_UpdateLogo(t *testing.T) {
 }
 
 func TestDatabaseRepository_UpdateName(t *testing.T) {
-
 	type args struct {
 		ctx         context.Context
 		id          string
 		sponsorName string
-		tx          pgx.Tx
+		queryable   database.Queryable
 	}
 	tests := []struct {
 		name    string
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's 'since' date to 2022/11/9",
+			args: args{
+				ctx:         context.Background(),
+				id:          "2",
+				sponsorName: "Joe Shmoe's Wood Working",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: false,
+		},
+		{
+			name: "update invalid sponsor",
+			args: args{
+				ctx:         context.Background(),
+				id:          "-1",
+				sponsorName: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
+		{
+			name: "update invalid sponsor 2",
+			args: args{
+				ctx:         context.Background(),
+				id:          "1253434",
+				sponsorName: "nah g",
+				queryable:   databaseRepository.DatabasePool,
+			},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-
-			if err := databaseRepository.UpdateName(tt.args.ctx, tt.args.id, tt.args.sponsorName, tt.args.tx); (err != nil) != tt.wantErr {
+			if err := databaseRepository.UpdateName(tt.args.ctx, tt.args.id, tt.args.sponsorName, tt.args.queryable); (err != nil) != tt.wantErr {
 				t.Errorf("UpdateName() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
