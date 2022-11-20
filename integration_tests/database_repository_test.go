@@ -373,7 +373,7 @@ func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
 		ctx         context.Context
 		id          string
 		sponsorSite string
-		tx          pgx.Tx
+		tx          database.Queryable
 	}
 	tests := []struct {
 		name    string
@@ -381,7 +381,19 @@ func TestDatabaseRepository_UpdateWebsite(t *testing.T) {
 		args    args
 		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "update Joe Shmoe's website to joe.mama",
+			fields: fields{
+				DatabasePool: pool,
+			},
+			args: args{
+				ctx:         context.Background(),
+				id:          "2",
+				sponsorSite: "joe.mama",
+				tx:          pool,
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
