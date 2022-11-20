@@ -568,18 +568,6 @@ func TestDatabaseRepository_GetSponsor(t *testing.T) {
 }
 
 func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
-	// check if integration testing is disabled
-	if *integrationTest == false {
-		t.Skipf("skipping integration test")
-	}
-
-	// connect to database
-	pool, err := database.ConnectWithRetries(*databaseUri)
-	if err != nil {
-		t.Error("unable to connect to database", err)
-	}
-	//
-
 	type args struct {
 		ctx       context.Context
 		id        string
@@ -596,7 +584,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				id:        "1",
-				queryable: pool,
+				queryable: databaseRepository.DatabasePool,
 			},
 			want: &model.Sponsor{
 				ID:          "1",
@@ -613,7 +601,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				id:        "-1",
-				queryable: pool,
+				queryable: databaseRepository.DatabasePool,
 			},
 			want:    nil,
 			wantErr: true,
@@ -623,7 +611,7 @@ func TestDatabaseRepository_GetSponsorWithQueryable(t *testing.T) {
 			args: args{
 				ctx:       context.Background(),
 				id:        "2389472938",
-				queryable: pool,
+				queryable: databaseRepository.DatabasePool,
 			},
 			want:    nil,
 			wantErr: true,
