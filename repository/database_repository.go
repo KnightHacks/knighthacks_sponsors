@@ -2,13 +2,13 @@ package repository
 
 import (
 	"context"
-	"strconv"
 	"errors"
 	"fmt"
 	"github.com/KnightHacks/knighthacks_shared/database"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/jackc/pgx/v4"
 	"github.com/jackc/pgx/v4/pgxpool"
+	"strconv"
 	"time"
 )
 
@@ -53,10 +53,21 @@ func (r *DatabaseRepository) CreateSponsor(ctx context.Context, input *model.New
 	}, nil
 }
 
-func (r *DatabaseRepository) getSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
+func (r *DatabaseRepository) GetSponsorWithQueryable(ctx context.Context, id string, queryable database.Queryable) (*model.Sponsor, error) {
 	var sponsor model.Sponsor
-	err := queryable.QueryRow(ctx, "SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id = $1", id).Scan(&sponsor.ID, &sponsor.Description,
-		&sponsor.Name, &sponsor.Logo, &sponsor.Tier, &sponsor.Website, &sponsor.Since)
+	var idInt int
+
+	err := queryable.QueryRow(ctx, "SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id = $1", id).Scan(
+		&idInt,
+		&sponsor.Description,
+		&sponsor.Name,
+		&sponsor.Logo,
+		&sponsor.Tier,
+		&sponsor.Website,
+		&sponsor.Since,
+	)
+
+	sponsor.ID = strconv.Itoa(idInt)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -112,7 +123,7 @@ func (r *DatabaseRepository) UpdateSponsor(ctx context.Context, id string, input
 				return err
 			}
 		}
-		sponsor, err = r.getSponsorWithQueryable(ctx, id, tx)
+		sponsor, err = r.GetSponsorWithQueryable(ctx, id, tx)
 		if err != nil {
 			return err
 		}
@@ -124,8 +135,8 @@ func (r *DatabaseRepository) UpdateSponsor(ctx context.Context, id string, input
 	return sponsor, nil
 }
 
-func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorDesc string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET description = $1 WHERE id = $2", sponsorDesc, id)
+func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorDesc string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET description = $1 WHERE id = $2", sponsorDesc, id)
 	if err != nil {
 		return err
 	}
@@ -135,8 +146,8 @@ func (r *DatabaseRepository) UpdateDesc(ctx context.Context, id string, sponsorD
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorName string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET name = $1 WHERE id = $2", sponsorName, id)
+func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorName string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET name = $1 WHERE id = $2", sponsorName, id)
 	if err != nil {
 		return err
 	}
@@ -146,8 +157,8 @@ func (r *DatabaseRepository) UpdateName(ctx context.Context, id string, sponsorN
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorLogo string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET logo_url = $1 WHERE id = $2", sponsorLogo, id)
+func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorLogo string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET logo_url = $1 WHERE id = $2", sponsorLogo, id)
 	if err != nil {
 		return err
 	}
@@ -157,8 +168,8 @@ func (r *DatabaseRepository) UpdateLogo(ctx context.Context, id string, sponsorL
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorTier model.SubscriptionTier, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET tier = $1 WHERE id = $2", sponsorTier, id)
+func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorTier model.SubscriptionTier, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET tier = $1 WHERE id = $2", sponsorTier, id)
 	if err != nil {
 		return err
 	}
@@ -168,8 +179,8 @@ func (r *DatabaseRepository) UpdateTier(ctx context.Context, id string, sponsorT
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, sponsorSite string, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET website = $1 WHERE id = $2", sponsorSite, id)
+func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, sponsorSite string, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET website = $1 WHERE id = $2", sponsorSite, id)
 	if err != nil {
 		return err
 	}
@@ -179,8 +190,8 @@ func (r *DatabaseRepository) UpdateWebsite(ctx context.Context, id string, spons
 	return nil
 }
 
-func (r *DatabaseRepository) UpdateSince(ctx context.Context, id string, sponsorSince time.Time, tx pgx.Tx) error {
-	commandTag, err := tx.Exec(ctx, "UPDATE sponsors SET since = $1 WHERE id = $2", sponsorSince, id)
+func (r *DatabaseRepository) UpdateSince(ctx context.Context, id string, sponsorSince time.Time, queryable database.Queryable) error {
+	commandTag, err := queryable.Exec(ctx, "UPDATE sponsors SET since = $1 WHERE id = $2", sponsorSince, id)
 	if err != nil {
 		return err
 	}
@@ -209,10 +220,66 @@ func (r *DatabaseRepository) DeleteSponsor(ctx context.Context, id string) (bool
 }
 
 func (r *DatabaseRepository) GetSponsor(ctx context.Context, id string) (*model.Sponsor, error) {
-	return r.getSponsorWithQueryable(ctx, id, r.DatabasePool)
+	return r.GetSponsorWithQueryable(ctx, id, r.DatabasePool)
 }
 
-func (r *DatabaseRepository) GetSponsors(ctx context.Context, first int, after string) ([]*model.Sponsor, int, error) {
-	//TODO implement me
-	panic("implement me")
+func (r *DatabaseRepository) GetSponsors(ctx context.Context, filter *model.SponsorFilter, first int, after string) (sponsors []*model.Sponsor, total int, err error) {
+	var sql string
+	var variables []any
+	var totalSql string
+	var totalVariables []any
+
+	if filter != nil {
+		stringTiers := make([]string, 0, len(filter.Tiers))
+
+		for _, tier := range filter.Tiers {
+			stringTiers = append(stringTiers, tier.String())
+		}
+
+		sql = `SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE tier = ANY ($1) AND id > $2 LIMIT $3`
+		variables = []any{stringTiers, after, first}
+
+		totalSql = `SELECT COUNT(*) FROM sponsors WHERE tier = ANY ($1) AND id > $2`
+		totalVariables = []any{stringTiers, after}
+	} else {
+		sql = `SELECT id, description, name, logo_url, tier, website, since FROM sponsors WHERE id > $1 LIMIT $2`
+		variables = []any{after, first}
+
+		totalSql = `SELECT COUNT(*) FROM sponsors WHERE id > $1`
+		totalVariables = []any{after}
+	}
+	err = r.DatabasePool.BeginTxFunc(ctx, pgx.TxOptions{}, func(tx pgx.Tx) error {
+		if err := tx.QueryRow(ctx, totalSql, totalVariables...).Scan(&total); err != nil {
+			return err
+		}
+
+		if total > 0 {
+			rows, err := tx.Query(ctx, sql, variables...)
+			if err != nil {
+				return err
+			}
+
+			for rows.Next() {
+				var sponsor model.Sponsor
+				var intId int
+				err = rows.Scan(
+					&intId,
+					&sponsor.Description,
+					&sponsor.Name,
+					&sponsor.Logo,
+					&sponsor.Tier,
+					&sponsor.Website,
+					&sponsor.Since,
+				)
+				if err != nil {
+					return err
+				}
+				sponsor.ID = strconv.Itoa(intId)
+				sponsors = append(sponsors, &sponsor)
+			}
+		}
+		return nil
+	})
+
+	return sponsors, total, err
 }
