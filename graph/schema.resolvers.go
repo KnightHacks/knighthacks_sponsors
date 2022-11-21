@@ -33,7 +33,7 @@ func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilte
 	if err != nil {
 		return nil, err
 	}
-	sponsors, total, err := r.Repository.GetSponsors(ctx, first, a)
+	sponsors, total, err := r.Repository.GetSponsors(ctx, filter, first, a)
 	if err != nil {
 		return nil, err
 	}
