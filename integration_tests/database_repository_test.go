@@ -9,6 +9,7 @@ import (
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
 	"github.com/KnightHacks/knighthacks_sponsors/repository"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"log"
 	"os"
 	"reflect"
 	"testing"
@@ -37,9 +38,9 @@ func TestMain(t *testing.M) {
 	// connect to database
 	var err error
 	pool, err := database.ConnectWithRetries(*databaseUri)
+	fmt.Printf("connecting to database, pool=%v, err=%v\n", pool, err)
 	if err != nil {
-		fmt.Printf("unable to connect to database err=%v\n", err)
-		os.Exit(-1)
+		log.Fatalf("unable to connect to database err=%v\n", err)
 	}
 
 	databaseRepository = repository.NewDatabaseRepository(pool)
