@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"github.com/KnightHacks/knighthacks_shared/database"
 	"github.com/KnightHacks/knighthacks_sponsors/graph/model"
-	"github.com/jackc/pgx/v4"
-	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"strconv"
 	"time"
 )
@@ -86,7 +86,7 @@ func (r *DatabaseRepository) UpdateSponsor(ctx context.Context, id string, input
 
 	var sponsor *model.Sponsor
 	var err error
-	err = r.DatabasePool.BeginTxFunc(ctx, pgx.TxOptions{}, func(tx pgx.Tx) error {
+	err = pgx.BeginTxFunc(ctx, r.DatabasePool, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		if input.Description != nil {
 			err = r.UpdateDesc(ctx, id, *input.Description, tx)
 			if err != nil {
@@ -248,7 +248,7 @@ func (r *DatabaseRepository) GetSponsors(ctx context.Context, filter *model.Spon
 		totalSql = `SELECT COUNT(*) FROM sponsors WHERE id > $1`
 		totalVariables = []any{after}
 	}
-	err = r.DatabasePool.BeginTxFunc(ctx, pgx.TxOptions{}, func(tx pgx.Tx) error {
+	err = pgx.BeginTxFunc(ctx, r.DatabasePool, pgx.TxOptions{}, func(tx pgx.Tx) error {
 		if err := tx.QueryRow(ctx, totalSql, totalVariables...).Scan(&total); err != nil {
 			return err
 		}
