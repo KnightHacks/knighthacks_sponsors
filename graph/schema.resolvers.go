@@ -40,7 +40,7 @@ func (r *queryResolver) Sponsors(ctx context.Context, filter *model.SponsorFilte
 
 	return &model.SponsorsConnection{
 		TotalCount: total,
-		PageInfo:   pagination.GetPageInfo(sponsors[0].ID, sponsors[len(sponsors)-1].ID),
+		PageInfo:   pagination.GetPageInfo(sponsors),
 		Sponsors:   sponsors,
 	}, nil
 }
