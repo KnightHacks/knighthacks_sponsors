@@ -13,15 +13,17 @@ import (
 
 type Connection interface {
 	IsConnection()
+	GetTotalCount() *int
+	GetPageInfo() *models.PageInfo
 }
 
 type NewSponsor struct {
 	Name        string           `json:"name"`
 	Tier        SubscriptionTier `json:"tier"`
-	Since       *time.Time       `json:"since"`
-	Description *string          `json:"description"`
-	Website     *string          `json:"website"`
-	Logo        *string          `json:"logo"`
+	Since       *time.Time       `json:"since,omitempty"`
+	Description *string          `json:"description,omitempty"`
+	Website     *string          `json:"website,omitempty"`
+	Logo        *string          `json:"logo,omitempty"`
 }
 
 type Sponsor struct {
@@ -29,15 +31,15 @@ type Sponsor struct {
 	Name        string           `json:"name"`
 	Tier        SubscriptionTier `json:"tier"`
 	Since       time.Time        `json:"since"`
-	Description *string          `json:"description"`
-	Website     *string          `json:"website"`
-	Logo        *string          `json:"logo"`
+	Description *string          `json:"description,omitempty"`
+	Website     *string          `json:"website,omitempty"`
+	Logo        *string          `json:"logo,omitempty"`
 }
 
 func (Sponsor) IsEntity() {}
 
 type SponsorFilter struct {
-	Tiers []SubscriptionTier `json:"tiers"`
+	Tiers []SubscriptionTier `json:"tiers,omitempty"`
 }
 
 type SponsorsConnection struct {
@@ -46,15 +48,17 @@ type SponsorsConnection struct {
 	Sponsors   []*Sponsor       `json:"sponsors"`
 }
 
-func (SponsorsConnection) IsConnection() {}
+func (SponsorsConnection) IsConnection()                      {}
+func (this SponsorsConnection) GetTotalCount() *int           { return &this.TotalCount }
+func (this SponsorsConnection) GetPageInfo() *models.PageInfo { return this.PageInfo }
 
 type UpdatedSponsor struct {
-	Name        *string           `json:"name"`
-	Tier        *SubscriptionTier `json:"tier"`
-	Since       *time.Time        `json:"since"`
-	Description *string           `json:"description"`
-	Website     *string           `json:"website"`
-	Logo        *string           `json:"logo"`
+	Name        *string           `json:"name,omitempty"`
+	Tier        *SubscriptionTier `json:"tier,omitempty"`
+	Since       *time.Time        `json:"since,omitempty"`
+	Description *string           `json:"description,omitempty"`
+	Website     *string           `json:"website,omitempty"`
+	Logo        *string           `json:"logo,omitempty"`
 }
 
 type SubscriptionTier string
