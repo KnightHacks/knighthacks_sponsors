@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/KnightHacks/knighthacks_shared/auth"
 	"github.com/KnightHacks/knighthacks_shared/database"
@@ -67,15 +66,9 @@ func graphqlHandler(a *auth.Auth, pool *pgxpool.Pool) gin.HandlerFunc {
 		},
 	}
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(config))
-	srv.SetRecoverFunc(func(ctx context.Context, iErr interface{}) error {
-		err := fmt.Errorf("%v", iErr)
-
-		log.Printf("runtime error: %v\n\n%v\n", err, string(debug.Stack()))
-
-		return gqlerror.Errorf("Internal server error! Check logs for more details!")
-	})
 	srv.SetErrorPresenter(func(ctx context.Context, err error) *gqlerror.Error {
 		log.Println("Error presented: ", err)
+		debug.PrintStack()
 		return graphql.DefaultErrorPresenter(ctx, err)
 	})
 	return func(c *gin.Context) {
